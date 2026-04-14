@@ -66,6 +66,8 @@ func TestBuildLimiter(t *testing.T) {
 		t.Fatal("expected non-nil limiter")
 	}
 	// Verify burst by consuming tokens.
+	// Note: burst size of 3 means exactly 3 requests should be allowed
+	// before the limiter starts blocking (assuming no time passes).
 	allowed := 0
 	for i := 0; i < 5; i++ {
 		if limiter.Allow("test-ip") {
