@@ -16,16 +16,18 @@ type RateLimiterConfig struct {
 }
 
 // DefaultRateLimiterConfig returns sensible defaults.
+// Personal note: lowered defaults from 5 RPS / 10 burst to 2 RPS / 5 burst
+// since this is a personal instance and I don't need high throughput.
 func DefaultRateLimiterConfig() RateLimiterConfig {
 	return RateLimiterConfig{
-		RequestsPerSecond: 5,
-		Burst:             10,
+		RequestsPerSecond: 2,
+		Burst:             5,
 	}
 }
 
 // RateLimiterConfigFromEnv reads rate limiter settings from environment variables:
-//   RATE_LIMIT_RPS  — requests per second (float, default 5)
-//   RATE_LIMIT_BURST — burst size (int, default 10)
+//   RATE_LIMIT_RPS  — requests per second (float, default 2)
+//   RATE_LIMIT_BURST — burst size (int, default 5)
 func RateLimiterConfigFromEnv() RateLimiterConfig {
 	cfg := DefaultRateLimiterConfig()
 
