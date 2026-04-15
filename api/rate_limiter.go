@@ -2,6 +2,7 @@ package api
 
 import (
 	"net/http"
+	"strings"
 	"sync"
 	"time"
 
@@ -67,12 +68,14 @@ func RateLimitMiddleware(limiter *IPRateLimiter) func(http.Handler) http.Handler
 }
 
 // realIP extracts the real client IP from common headers or RemoteAddr.
+// When X-Forwarded-For contains a chain of IPs, use only the first (client) IP.
 func realIP(r *http.Request) string {
 	if ip := r.Header.Get("X-Real-IP"); ip != "" {
 		return ip
 	}
 	if ip := r.Header.Get("X-Forwarded-For"); ip != "" {
-		return ip
+		// X-Forwarded-For may be "client, proxy1, proxy2" — take the first entry
+		return strings.TrimSpace(strings.SplitN(ip, ",", 2)[0])
 	}
 	return r.RemoteAddr
 }
