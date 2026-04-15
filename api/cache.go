@@ -27,6 +27,7 @@ func NewSearchCache(ttl time.Duration) *SearchCache {
 }
 
 // Get retrieves a cached result by key. Returns nil if not found or expired.
+// Note: expired entries are not deleted here; call Flush() periodically to clean up.
 func (c *SearchCache) Get(key string) ([]map[string]interface{}, bool) {
 	c.mu.RLock()
 	defer c.mu.RUnlock()
@@ -60,6 +61,8 @@ func (c *SearchCache) Delete(key string) {
 }
 
 // Flush removes all expired entries from the cache.
+// It's safe to call this concurrently; consider running it on a ticker
+// (e.g. every 5 minutes) to prevent unbounded memory growth.
 func (c *SearchCache) Flush() {
 	c.mu.Lock()
 	defer c.mu.Unlock()
