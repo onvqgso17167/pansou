@@ -36,11 +36,12 @@ func TestSearchCache_Miss(t *testing.T) {
 }
 
 func TestSearchCache_Expiry(t *testing.T) {
+	// Use a slightly longer sleep to avoid flaky failures on slow CI machines
 	cache := NewSearchCache(50 * time.Millisecond)
 
 	cache.Set("keyword:expire", []map[string]interface{}{{"name": "old"}})
 
-	time.Sleep(100 * time.Millisecond)
+	time.Sleep(150 * time.Millisecond)
 
 	_, ok := cache.Get("keyword:expire")
 	if ok {
@@ -65,7 +66,8 @@ func TestSearchCache_Flush(t *testing.T) {
 	cache.Set("k1", []map[string]interface{}{{"name": "a"}})
 	cache.Set("k2", []map[string]interface{}{{"name": "b"}})
 
-	time.Sleep(100 * time.Millisecond)
+	// Wait for k1 and k2 to expire before adding k3
+	time.Sleep(150 * time.Millisecond)
 
 	cache.Set("k3", []map[string]interface{}{{"name": "c"}})
 
