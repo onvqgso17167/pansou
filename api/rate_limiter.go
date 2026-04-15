@@ -46,6 +46,8 @@ func (i *IPRateLimiter) Allow(ip string) bool {
 }
 
 // Cleanup removes stale limiters (for long-running servers).
+// NOTE: This is a naive full reset. A production implementation should track
+// last-seen timestamps per IP and only evict entries older than ttl.
 func (i *IPRateLimiter) Cleanup(ttl time.Duration) {
 	i.mu.Lock()
 	defer i.mu.Unlock()
@@ -59,6 +61,8 @@ func RateLimitMiddleware(limiter *IPRateLimiter) func(http.Handler) http.Handler
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			ip := realIP(r)
 			if !limiter.Allow(ip) {
+				// Set Retry-After header to hint clients when they can retry.
+				w.Header().Set("Retry-After", "1")
 				http.Error(w, `{"error":"rate limit exceeded"}`, http.StatusTooManyRequests)
 				return
 			}
