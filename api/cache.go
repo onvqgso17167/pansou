@@ -81,3 +81,17 @@ func (c *SearchCache) Len() int {
 	defer c.mu.RUnlock()
 	return len(c.entries)
 }
+
+// LenActive returns the number of non-expired entries currently in the cache.
+func (c *SearchCache) LenActive() int {
+	c.mu.RLock()
+	defer c.mu.RUnlock()
+	now := time.Now()
+	count := 0
+	for _, entry := range c.entries {
+		if !now.After(entry.ExpiresAt) {
+			count++
+		}
+	}
+	return count
+}
