@@ -65,11 +65,12 @@ func (pm *PluginManager) Remove(name string) {
 	delete(pm.plugins, name)
 }
 
-// GetHTTPClient returns an http.Client with the plugin's configured timeout
+// GetHTTPClient returns an http.Client with the plugin's configured timeout.
+// Default timeout is increased to 15s to reduce premature timeouts on slow sources.
 func (p *Plugin) GetHTTPClient() *http.Client {
 	timeout := p.Timeout
 	if timeout <= 0 {
-		timeout = 10
+		timeout = 15
 	}
 	return &http.Client{Timeout: time.Duration(timeout) * time.Second}
 }
