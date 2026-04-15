@@ -41,6 +41,9 @@ func TestPluginManager_Remove(t *testing.T) {
 	}
 }
 
+// TestPlugin_GetHTTPClient_DefaultTimeout verifies that a plugin with Timeout=0
+// falls back to the default 10-second timeout. Bumping this to 15s in production
+// might be worth considering for slower upstream plugin endpoints.
 func TestPlugin_GetHTTPClient_DefaultTimeout(t *testing.T) {
 	p := &Plugin{Name: "test", URL: "http://test.com", Timeout: 0}
 	client := p.GetHTTPClient()
