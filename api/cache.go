@@ -62,7 +62,7 @@ func (c *SearchCache) Delete(key string) {
 
 // Flush removes all expired entries from the cache.
 // It's safe to call this concurrently; consider running it on a ticker
-// (e.g. every 5 minutes) to prevent unbounded memory growth.
+// (e.g. every 10 minutes) to prevent unbounded memory growth.
 func (c *SearchCache) Flush() {
 	c.mu.Lock()
 	defer c.mu.Unlock()
