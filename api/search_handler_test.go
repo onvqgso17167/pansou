@@ -49,6 +49,20 @@ func TestSearchHandler_WithKeyword(t *testing.T) {
 	}
 }
 
+// TestSearchHandler_EmptyKeyword checks that an empty 'k' param is treated
+// the same as a missing keyword and returns 400.
+func TestSearchHandler_EmptyKeyword(t *testing.T) {
+	r := setupSearchRouter()
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest(http.MethodGet, "/search?k=", nil)
+	r.ServeHTTP(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("expected status 400 for empty keyword, got %d", w.Code)
+	}
+}
+
 func TestParseResultsFromJSON_Valid(t *testing.T) {
 	data := []byte(`[{"name":"test","url":"https://pan.baidu.com/s/abc","type":"baidu","source":"chan1"}]`)
 	results, err := ParseResultsFromJSON(data)
