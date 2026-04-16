@@ -63,8 +63,8 @@ func RateLimitMiddleware(limiter *IPRateLimiter) func(http.Handler) http.Handler
 			ip := realIP(r)
 			if !limiter.Allow(ip) {
 				// Set Retry-After header to hint clients when they can retry.
-				// Using 5 seconds instead of 1 to reduce aggressive client retries.
-				w.Header().Set("Retry-After", "5")
+				// Using 10 seconds to further discourage rapid retries from clients.
+				w.Header().Set("Retry-After", "10")
 				w.Header().Set("Content-Type", "application/json")
 				http.Error(w, `{"error":"rate limit exceeded"}`, http.StatusTooManyRequests)
 				return
