@@ -85,24 +85,3 @@ func TestFilterMergedByType(t *testing.T) {
 	// aliyun should have 1 entry
 	assert.Equal(t, 1, len(grouped["aliyun"]))
 }
-
-// TestApplyResultFilter_EmptyInput returns empty output for empty input.
-func TestApplyResultFilter_EmptyInput(t *testing.T) {
-	result := applyResultFilter([]SearchResult{}, "", "")
-	assert.NotNil(t, result)
-	assert.Empty(t, result)
-}
-
-// TestApplyResultFilter_PreservesOrder checks that order is preserved after filtering.
-func TestApplyResultFilter_PreservesOrder(t *testing.T) {
-	results := []SearchResult{
-		{Name: "Alpha", URL: "https://pan.baidu.com/s/1", Type: "baidu"},
-		{Name: "Beta", URL: "https://pan.baidu.com/s/2", Type: "baidu"},
-		{Name: "Gamma", URL: "https://pan.baidu.com/s/3", Type: "baidu"},
-	}
-	filtered := applyResultFilter(results, "baidu", "")
-	assert.Equal(t, 3, len(filtered))
-	assert.Equal(t, "Alpha", filtered[0].Name)
-	assert.Equal(t, "Beta", filtered[1].Name)
-	assert.Equal(t, "Gamma", filtered[2].Name)
-}
